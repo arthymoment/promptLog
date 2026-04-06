@@ -1,0 +1,18 @@
+[2026-03-04 15:41:23] [INFO] PromptLog 伺服器已啟動，監聽埠 3000
+[2026-03-04 15:41:41] [INFO] GET /api/admin/prompts?limit=3 200 7ms from ::ffff:172.28.0.1
+[2026-03-04 15:41:47] [INFO] GET /api/admin/prompts?project_id=3&limit=2 200 3ms from ::ffff:172.28.0.1
+[2026-03-04 15:41:47] [INFO] GET /api/admin/prompts?project_id=1&limit=2 200 5ms from ::ffff:172.28.0.1
+[2026-03-04 15:41:47] [INFO] GET /api/admin/prompts?start_date=2026-03-04&end_date=2026-03-04&limit=1 200 5ms from ::ffff:172.28.0.1
+[2026-03-04 15:46:02] [WARN] [ADMIN AUTH] 無效的 Admin Key from ::ffff:172.28.0.1
+[2026-03-04 15:46:02] [INFO] GET /api/admin/prompts 401 2ms from ::ffff:172.28.0.1
+[2026-03-04 15:46:13] [INFO] GET /api/admin/keys 200 2ms from ::ffff:172.28.0.1
+[2026-03-04 15:47:49] [WARN] [ADMIN AUTH] 無效的 Admin Key from ::ffff:172.28.0.1
+[2026-03-04 15:47:49] [INFO] GET /api/admin/prompts 401 1ms from ::ffff:172.28.0.1
+[2026-03-04 15:48:20] [WARN] [ADMIN AUTH] 無效的 Admin Key from ::ffff:172.28.0.1
+[2026-03-04 15:48:20] [INFO] GET /api/admin/prompts 401 0ms from ::ffff:172.28.0.1
+[2026-03-04 15:48:38] [WARN] [ADMIN AUTH] 無效的 Admin Key from ::ffff:172.28.0.1
+[2026-03-04 15:48:38] [INFO] GET /api/admin/prompts 401 2ms from ::ffff:172.28.0.1
+[2026-03-04 15:48:54] [INFO] GET /api/admin/prompts 200 3ms from ::ffff:172.28.0.1
+[2026-03-04 15:50:12] [INFO] GET /api/admin/prompts 200 3ms from ::ffff:172.28.0.1
+[2026-03-04 15:51:53] [INFO] GET /api/admin/keys 200 1ms from ::ffff:172.28.0.1
+[2026-03-04 15:53:15] [INFO] GET /api/admin/prompts?limit=1 200 4ms from ::ffff:172.28.0.1

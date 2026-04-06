@@ -1,0 +1,10 @@
+[2026-03-24 22:20:24] [INFO] PromptLog 伺服器已啟動，監聽埠 3000
+[2026-03-25 00:45:48] [INFO] [PROMPTS] 新增 id=44 project=apigee-stats model=- user=-
+[2026-03-25 00:45:48] [INFO] POST /api/prompts 201 30ms from ::ffff:172.28.0.1
+[2026-03-25 03:09:53] [INFO] GET /src/.env 404 1ms from ::ffff:172.28.0.1
+[2026-03-25 03:24:17] [INFO] GET / 404 1ms from ::ffff:172.28.0.1
+[2026-03-25 05:01:08] [INFO] GET /.aws/credentials 404 1ms from ::ffff:172.28.0.1
+[2026-03-25 05:01:08] [INFO] GET /.env 404 0ms from ::ffff:172.28.0.1
+[2026-03-25 05:01:08] [INFO] GET /.env.production 404 1ms from ::ffff:172.28.0.1
+[2026-03-25 05:01:08] [INFO] GET /aws.env 404 1ms from ::ffff:172.28.0.1
+[2026-03-25 05:10:23] [INFO] GET / 404 0ms from ::ffff:172.28.0.1

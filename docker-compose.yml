@@ -1,0 +1,19 @@
+services:
+  promptlog:
+    build: .
+    container_name: promptlog
+    restart: unless-stopped
+    stop_grace_period: 30s
+    ports:
+      - "13001:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - ADMIN_KEY=${ADMIN_KEY}
+      - DB_PATH=/app/data/promptlog.db
+      - LOG_LEVEL=${LOG_LEVEL:-info}
+    volumes:
+      # 持久化資料庫
+      - ./data:/app/data
+      # 持久化日誌
+      - ./logs:/app/logs

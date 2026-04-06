@@ -1,0 +1,21 @@
+Prompt 執行記錄
+================
+執行時間: 2026-03-25T01:51:56
+使用模型: Claude Sonnet 4.6
+
+Prompt 內容:
+-----------
+我剛剛查詢時，它是空的，而我新增一筆資料，要開始進行資料的重建，查詢資料，有一筆。然後我打docker compose down。接著再docker compose up -d，想確認目前資料有保留。沒想到之前的資料全都恢復了，反而是剛剛打的資料不見了。請幫我找出原因並修復。這個問題我先前提一次，但其實沒有修好，這是第二次犯了
+
+問題診斷與修復:
+-----------
+根本原因：
+1. db.close() 僅觸發 SQLite PASSIVE 模式 WAL checkpoint，不保證全部 frames 寫入主 DB
+2. 殘留的 promptlog.db-shm 檔案可能在重啟後造成 WAL 索引狀態混亂
+3. Docker 預設 stop_grace_period 只有 10 秒，可能在 checkpoint 完成前 SIGKILL
+
+修復項目：
+- src/app.js：gracefulShutdown 中增加明確的 wal_checkpoint(TRUNCATE) 呼叫（在 db.close() 前）
+- src/db.js：啟動時若 WAL 為空但 SHM 存在則刪除殘留 SHM 檔案
+- docker-compose.yml：增加 stop_grace_period: 30s
+- docs/version.md：Backend 版本更新至 1.0.1

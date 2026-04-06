@@ -1,0 +1,24 @@
+{
+  "mcpServers": {
+    "context7": {
+      "tools": [
+        "*"
+      ],
+      "type": "http",
+      "url": "https://mcp.context7.com/mcp",
+      "headers": {}
+    },
+    "playwright": {
+      "tools": [
+        "*"
+      ],
+      "type": "local",
+      "command": "npx",
+      "args": [
+        "@playwright/mcp@latest",
+        "--allowed-hosts",
+        "*"
+      ]
+    }
+  }
+}

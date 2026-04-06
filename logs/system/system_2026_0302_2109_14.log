@@ -1,0 +1,7 @@
+[2026-03-02 21:09:14] [INFO] PromptLog 伺服器已啟動，監聽埠 3000
+[2026-03-02 21:09:17] [INFO] GET /api/admin/projects 200 6ms from ::ffff:172.28.0.1
+[2026-03-02 21:09:24] [INFO] [ADMIN] 建立專案 id=4 name=test-project
+[2026-03-02 21:09:24] [INFO] POST /api/admin/projects 201 12ms from ::ffff:172.28.0.1
+[2026-03-02 21:09:24] [INFO] GET /api/admin/projects 200 3ms from ::ffff:172.28.0.1
+[2026-03-02 21:09:31] [INFO] [ADMIN] 刪除專案 id=4
+[2026-03-02 21:09:31] [INFO] DELETE /api/admin/projects/4 200 10ms from ::ffff:172.28.0.1

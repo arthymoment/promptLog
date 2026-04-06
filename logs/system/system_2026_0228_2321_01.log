@@ -1,0 +1,18 @@
+[2026-02-28 23:21:01] [INFO] PromptLog 伺服器已啟動，監聽埠 3000
+[2026-02-28 23:23:51] [INFO] GET /health 200 9ms from ::ffff:172.28.0.1
+[2026-02-28 23:23:53] [INFO] GET /health 200 1ms from ::ffff:172.28.0.1
+[2026-02-28 23:23:54] [INFO] GET /health 200 1ms from ::ffff:172.28.0.1
+[2026-02-28 23:23:55] [INFO] GET /health 200 1ms from ::ffff:172.28.0.1
+[2026-02-28 23:23:55] [INFO] GET /health 200 1ms from ::ffff:172.28.0.1
+[2026-02-28 23:23:56] [INFO] GET /health 200 1ms from ::ffff:172.28.0.1
+[2026-02-28 23:23:56] [INFO] GET /health 200 0ms from ::ffff:172.28.0.1
+[2026-02-28 23:24:05] [INFO] GET /api/prompts 200 5ms from ::ffff:172.28.0.1
+[2026-02-28 23:24:06] [INFO] GET /api/prompts 200 2ms from ::ffff:172.28.0.1
+[2026-02-28 23:24:42] [INFO] [PROMPTS] 新增 id=3 project=promptLog model=- user=-
+[2026-02-28 23:24:42] [INFO] POST /api/prompts 201 5ms from ::ffff:172.28.0.1
+[2026-02-28 23:25:20] [INFO] GET /api/prompts 200 2ms from ::ffff:172.28.0.1
+[2026-02-28 23:25:21] [INFO] GET /api/prompts 200 2ms from ::ffff:172.28.0.1
+[2026-02-28 23:25:22] [INFO] GET /api/prompts 200 2ms from ::ffff:172.28.0.1
+[2026-02-28 23:26:28] [INFO] [PROMPTS] 新增 id=4 project=promptLog model=- user=-
+[2026-02-28 23:26:28] [INFO] POST /api/prompts 201 7ms from ::ffff:172.28.0.1
+[2026-02-28 23:42:22] [INFO] GET /api/prompts 200 2ms from ::ffff:172.28.0.1

@@ -1,0 +1,6 @@
+[2026-03-30 17:25:44] [INFO] PromptLog 伺服器已啟動，監聽埠 3000
+[2026-03-30 23:34:43] [INFO] GET / 404 31ms from ::ffff:172.26.0.1
+[2026-03-30 23:35:49] [INFO] GET / 404 1ms from ::ffff:172.26.0.1
+[2026-03-31 04:06:42] [INFO] GET /robots.txt 404 1ms from ::ffff:172.26.0.1
+[2026-03-31 20:27:11] [INFO] GET /.git/config 404 3ms from ::ffff:172.26.0.1
+[2026-04-01 00:15:10] [INFO] GET /robots.txt 404 1ms from ::ffff:172.26.0.1

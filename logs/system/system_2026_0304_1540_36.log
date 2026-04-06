@@ -1,0 +1,4 @@
+[2026-03-04 15:40:36] [INFO] PromptLog 伺服器已啟動，監聽埠 3000
+[2026-03-04 15:40:46] [INFO] GET /api/admin/prompts?limit=3&page=1 404 6ms from ::ffff:172.28.0.1
+[2026-03-04 15:40:46] [INFO] GET /api/admin/prompts?project_id=3&limit=2 404 1ms from ::ffff:172.28.0.1
+[2026-03-04 15:40:46] [INFO] GET /api/admin/prompts?start_date=2026-03-04&end_date=2026-03-04 404 1ms from ::ffff:172.28.0.1

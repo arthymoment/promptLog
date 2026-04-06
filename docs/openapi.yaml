@@ -1,0 +1,886 @@
+openapi: 3.0.3
+info:
+  title: PromptLog API
+  description: LLM Prompt 日誌記錄 API 服務。讓 LLM 在系統提示詞中自動呼叫此 API 儲存每次 Prompt 內容。
+  version: 1.0.0
+  contact:
+    name: PromptLog 支援
+  license:
+    name: MIT
+
+servers:
+  - url: http://localhost:3000
+    description: 本地開發伺服器
+  - url: https://your-domain.com
+    description: 生產環境（需替換為實際域名）
+
+tags:
+  - name: Prompt 管理
+    description: 新增、查詢、取得與刪除 Prompt 記錄
+  - name: 專案管理
+    description: 建立與管理 Prompt 記錄所屬的專案
+  - name: API Key 管理
+    description: 產生、列出、啟停與刪除 API Key
+  - name: 健康檢查
+    description: 伺服器狀態檢查
+
+paths:
+  /health:
+    get:
+      tags:
+        - 健康檢查
+      summary: 伺服器健康檢查
+      description: 檢查伺服器是否正常運作
+      operationId: getHealth
+      responses:
+        '200':
+          description: 伺服器正常
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+                  timestamp:
+                    type: string
+                    format: date-time
+
+  /api/prompts:
+    post:
+      tags:
+        - Prompt 管理
+      summary: 新增 Prompt 記錄
+      description: 建立一筆新的 Prompt 記錄，由 LLM 在系統提示詞中呼叫此端點自動儲存
+      operationId: createPrompt
+      security:
+        - apiKeyAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreatePromptRequest'
+            examples:
+              基本範例:
+                value:
+                  prompt: "請幫我翻譯這段英文"
+              完整範例:
+                value:
+                  prompt: "請幫我翻譯這段英文"
+                  model: "gpt-4o"
+                  user: "user-001"
+                  prompt_tokens: 10
+                  total_tokens: 50
+                  extra:
+                    session_id: "abc123"
+                    language: "zh-TW"
+      responses:
+        '201':
+          description: Prompt 記錄成功建立
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 1
+                  message:
+                    type: string
+                    example: "記錄成功"
+        '400':
+          description: 請求參數有誤（例如缺少 prompt 欄位）
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: API Key 缺失或無效
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: 伺服器內部錯誤
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    get:
+      tags:
+        - Prompt 管理
+      summary: 查詢 Prompt 記錄
+      description: |
+        查詢此 API Key 所屬專案的 Prompt 記錄。
+        支援以使用者、模型、關鍵字、日期範圍進行過濾，並支援分頁。
+      operationId: listPrompts
+      security:
+        - apiKeyAuth: []
+      parameters:
+        - name: user
+          in: query
+          description: 使用者識別（模糊比對）
+          schema:
+            type: string
+          example: "user-001"
+        - name: model
+          in: query
+          description: 模型名稱（模糊比對）
+          schema:
+            type: string
+          example: "gpt-4o"
+        - name: keyword
+          in: query
+          description: Prompt 內容關鍵字（模糊比對）
+          schema:
+            type: string
+          example: "翻譯"
+        - name: start_date
+          in: query
+          description: 開始日期（YYYY-MM-DD 格式）
+          schema:
+            type: string
+            format: date
+          example: "2026-02-01"
+        - name: end_date
+          in: query
+          description: 結束日期（YYYY-MM-DD 格式）
+          schema:
+            type: string
+            format: date
+          example: "2026-02-28"
+        - name: page
+          in: query
+          description: 頁碼（預設值為 1）
+          schema:
+            type: integer
+            default: 1
+            minimum: 1
+          example: 1
+        - name: limit
+          in: query
+          description: 每頁筆數（預設 20，最大 100）
+          schema:
+            type: integer
+            default: 20
+            minimum: 1
+            maximum: 100
+          example: 20
+      responses:
+        '200':
+          description: 成功取得 Prompt 記錄列表
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PromptsListResponse'
+        '401':
+          description: API Key 缺失或無效
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: 伺服器內部錯誤
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/prompts/{id}:
+    get:
+      tags:
+        - Prompt 管理
+      summary: 取得單筆 Prompt 記錄
+      description: 根據 ID 取得此 API Key 所屬專案的單筆 Prompt 記錄
+      operationId: getPrompt
+      security:
+        - apiKeyAuth: []
+      parameters:
+        - name: id
+          in: path
+          description: Prompt 記錄 ID
+          required: true
+          schema:
+            type: integer
+          example: 1
+      responses:
+        '200':
+          description: 成功取得 Prompt 記錄
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PromptObject'
+        '400':
+          description: ID 格式無效
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: API Key 缺失或無效
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: 找不到該 Prompt 記錄
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: 伺服器內部錯誤
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    delete:
+      tags:
+        - Prompt 管理
+      summary: 刪除 Prompt 記錄
+      description: 根據 ID 刪除此 API Key 所屬專案的單筆 Prompt 記錄
+      operationId: deletePrompt
+      security:
+        - apiKeyAuth: []
+      parameters:
+        - name: id
+          in: path
+          description: Prompt 記錄 ID
+          required: true
+          schema:
+            type: integer
+          example: 1
+      responses:
+        '200':
+          description: 記錄成功刪除
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "刪除成功"
+        '400':
+          description: ID 格式無效
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: API Key 缺失或無效
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: 找不到該記錄或無權限刪除
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: 伺服器內部錯誤
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/admin/projects:
+    post:
+      tags:
+        - 專案管理
+      summary: 建立新專案
+      description: 建立一個新的專案。需要提供 Admin Key 進行驗證
+      operationId: createProject
+      security:
+        - adminKeyAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateProjectRequest'
+            example:
+              name: "my-project"
+              description: "我的第一個專案"
+      responses:
+        '201':
+          description: 專案成功建立
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 1
+                  name:
+                    type: string
+                    example: "my-project"
+                  description:
+                    type: string
+                    nullable: true
+                    example: "我的第一個專案"
+        '400':
+          description: 請求參數有誤
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Admin Key 缺失或無效
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: 專案名稱已存在
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: 伺服器內部錯誤
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    get:
+      tags:
+        - 專案管理
+      summary: 列出所有專案
+      description: 列出所有專案及其統計資訊（活動 API Key 數與 Prompt 記錄數）。需要 Admin Key
+      operationId: listProjects
+      security:
+        - adminKeyAuth: []
+      responses:
+        '200':
+          description: 成功取得專案列表
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProjectObject'
+        '401':
+          description: Admin Key 缺失或無效
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: 伺服器內部錯誤
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/admin/projects/{id}:
+    delete:
+      tags:
+        - 專案管理
+      summary: 刪除專案
+      description: 刪除一個專案及其所有 API Key 和 Prompt 記錄。需要 Admin Key
+      operationId: deleteProject
+      security:
+        - adminKeyAuth: []
+      parameters:
+        - name: id
+          in: path
+          description: 專案 ID
+          required: true
+          schema:
+            type: integer
+          example: 1
+      responses:
+        '200':
+          description: 專案成功刪除
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "專案已刪除"
+        '400':
+          description: ID 格式無效
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Admin Key 缺失或無效
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: 找不到該專案
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: 伺服器內部錯誤
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/admin/keys:
+    post:
+      tags:
+        - API Key 管理
+      summary: 產生新 API Key
+      description: 為指定專案產生一個新的 API Key。需要 Admin Key
+      operationId: createApiKey
+      security:
+        - adminKeyAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateApiKeyRequest'
+            example:
+              project_id: 1
+              label: "主要使用"
+      responses:
+        '201':
+          description: API Key 成功產生
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiKeyObject'
+        '400':
+          description: 請求參數有誤
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Admin Key 缺失或無效
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: 找不到指定的專案
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: 伺服器內部錯誤
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    get:
+      tags:
+        - API Key 管理
+      summary: 列出所有 API Key
+      description: |
+        列出所有 API Key（完整 key 內容被隱藏，僅顯示前 12 碼）。
+        支援按專案 ID 過濾。需要 Admin Key
+      operationId: listApiKeys
+      security:
+        - adminKeyAuth: []
+      parameters:
+        - name: project_id
+          in: query
+          description: 專案 ID（可選，用於過濾特定專案的 Key）
+          schema:
+            type: integer
+          example: 1
+      responses:
+        '200':
+          description: 成功取得 API Key 列表
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ApiKeyListItem'
+        '401':
+          description: Admin Key 缺失或無效
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: 伺服器內部錯誤
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/admin/keys/{id}:
+    patch:
+      tags:
+        - API Key 管理
+      summary: 啟用或停用 API Key
+      description: 修改 API Key 的啟用狀態（is_active 為 0 表示停用，1 表示啟用）。需要 Admin Key
+      operationId: updateApiKeyStatus
+      security:
+        - adminKeyAuth: []
+      parameters:
+        - name: id
+          in: path
+          description: API Key ID
+          required: true
+          schema:
+            type: integer
+          example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateApiKeyStatusRequest'
+            example:
+              is_active: 0
+      responses:
+        '200':
+          description: API Key 狀態更新成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "API Key 已停用"
+        '400':
+          description: 請求參數有誤
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Admin Key 缺失或無效
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: 找不到該 API Key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: 伺服器內部錯誤
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    delete:
+      tags:
+        - API Key 管理
+      summary: 刪除 API Key
+      description: 永久刪除一個 API Key。需要 Admin Key
+      operationId: deleteApiKey
+      security:
+        - adminKeyAuth: []
+      parameters:
+        - name: id
+          in: path
+          description: API Key ID
+          required: true
+          schema:
+            type: integer
+          example: 1
+      responses:
+        '200':
+          description: API Key 成功刪除
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "API Key 已刪除"
+        '400':
+          description: ID 格式無效
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Admin Key 缺失或無效
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: 找不到該 API Key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: 伺服器內部錯誤
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  securitySchemes:
+    apiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+      description: |
+        用於存取 Prompt 相關 API 的 Key。
+        每個專案擁有獨立的 API Key，可透過管理 API 產生。
+    adminKeyAuth:
+      type: apiKey
+      in: header
+      name: X-Admin-Key
+      description: |
+        用於存取管理 API 的 Key。
+        此 Key 需要在環境變數 ADMIN_KEY 中設定。
+
+  schemas:
+    # Request Schemas
+    CreatePromptRequest:
+      type: object
+      required:
+        - prompt
+      properties:
+        prompt:
+          type: string
+          description: Prompt 內容（必填，不可為空）
+          example: "請幫我翻譯這段英文"
+        model:
+          type: string
+          description: 模型名稱，例如 gpt-4o、claude-3-opus
+          nullable: true
+          example: "gpt-4o"
+        user:
+          type: string
+          description: 使用者識別，用於區分不同使用者的 Prompt
+          nullable: true
+          example: "user-001"
+        prompt_tokens:
+          type: integer
+          description: Prompt 所用的 Token 數
+          nullable: true
+          example: 10
+        total_tokens:
+          type: integer
+          description: 總計使用的 Token 數（包含回應）
+          nullable: true
+          example: 50
+        extra:
+          type: object
+          description: 任意附加資訊，存為 JSON 格式
+          nullable: true
+          example:
+            session_id: "abc123"
+            language: "zh-TW"
+
+    CreateProjectRequest:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          description: 專案名稱（必填，必須唯一）
+          example: "my-project"
+        description:
+          type: string
+          description: 專案描述
+          nullable: true
+          example: "我的第一個專案"
+
+    CreateApiKeyRequest:
+      type: object
+      required:
+        - project_id
+      properties:
+        project_id:
+          type: integer
+          description: 此 API Key 所屬的專案 ID（必填）
+          example: 1
+        label:
+          type: string
+          description: API Key 標籤或說明
+          nullable: true
+          example: "主要使用"
+
+    UpdateApiKeyStatusRequest:
+      type: object
+      required:
+        - is_active
+      properties:
+        is_active:
+          type: integer
+          enum: [0, 1]
+          description: API Key 狀態（0=停用，1=啟用）
+          example: 1
+
+    # Response Schemas
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          description: 錯誤訊息
+          example: "無效的 API Key"
+
+    PromptObject:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        project_id:
+          type: integer
+          example: 1
+        project_name:
+          type: string
+          example: "test-project"
+        user:
+          type: string
+          nullable: true
+          example: "user-001"
+        model:
+          type: string
+          nullable: true
+          example: "gpt-4o"
+        prompt:
+          type: string
+          example: "請幫我翻譯這段英文"
+        prompt_tokens:
+          type: integer
+          nullable: true
+          example: 10
+        total_tokens:
+          type: integer
+          nullable: true
+          example: 50
+        extra:
+          type: object
+          nullable: true
+          example:
+            session_id: "abc123"
+        created_at:
+          type: string
+          format: date-time
+          example: "2026-02-27 04:02:19"
+
+    PromptsListResponse:
+      type: object
+      properties:
+        total:
+          type: integer
+          description: 符合條件的 Prompt 記錄總數
+          example: 150
+        page:
+          type: integer
+          description: 目前頁碼
+          example: 1
+        limit:
+          type: integer
+          description: 每頁筆數
+          example: 20
+        total_pages:
+          type: integer
+          description: 總頁數
+          example: 8
+        data:
+          type: array
+          description: Prompt 記錄列表
+          items:
+            $ref: '#/components/schemas/PromptObject'
+
+    ProjectObject:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "test-project"
+        description:
+          type: string
+          nullable: true
+          example: "測試專案"
+        created_at:
+          type: string
+          format: date-time
+          example: "2026-02-27 03:50:00"
+        active_keys:
+          type: integer
+          description: 此專案中活動（啟用）的 API Key 數量
+          example: 2
+        prompt_count:
+          type: integer
+          description: 此專案中的 Prompt 記錄總數
+          example: 150
+
+    ApiKeyObject:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        key:
+          type: string
+          description: 完整的 API Key（新建時才會顯示）
+          example: "plk_b6588b2ce9224397ad5e0a32e2397924"
+        project_id:
+          type: integer
+          example: 1
+        label:
+          type: string
+          nullable: true
+          example: "主要使用"
+        is_active:
+          type: integer
+          enum: [0, 1]
+          example: 1
+
+    ApiKeyListItem:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        key_preview:
+          type: string
+          description: API Key 預覽（前 12 碼 + 省略號）
+          example: "plk_b6588b2c..."
+        project_id:
+          type: integer
+          example: 1
+        project_name:
+          type: string
+          example: "test-project"
+        label:
+          type: string
+          nullable: true
+          example: "主要使用"
+        is_active:
+          type: integer
+          enum: [0, 1]
+          example: 1
+        created_at:
+          type: string
+          format: date-time
+          example: "2026-02-27 03:50:10"

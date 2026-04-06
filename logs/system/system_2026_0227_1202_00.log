@@ -1,0 +1,11 @@
+[2026-02-27 12:02:01] [INFO] PromptLog 伺服器已啟動，監聽埠 3000
+[2026-02-27 12:02:12] [INFO] GET /health 200 4ms from ::1
+[2026-02-27 12:02:12] [INFO] [ADMIN] 建立專案 id=1 name=test-project
+[2026-02-27 12:02:12] [INFO] POST /api/admin/projects 201 5ms from ::1
+[2026-02-27 12:02:12] [INFO] [ADMIN] 產生 API Key id=1 project_id=1 label=測試 Key
+[2026-02-27 12:02:12] [INFO] POST /api/admin/keys 201 8ms from ::1
+[2026-02-27 12:02:19] [INFO] [PROMPTS] 新增 id=1 project=test-project model=gpt-4o user=user-001
+[2026-02-27 12:02:19] [INFO] POST /api/prompts 201 11ms from ::1
+[2026-02-27 12:02:19] [INFO] GET /api/prompts?model=gpt 200 7ms from ::1
+[2026-02-27 12:02:20] [WARN] [AUTH] 無效的 API Key: invalid-... from ::1
+[2026-02-27 12:02:20] [INFO] GET /api/prompts 401 1ms from ::1

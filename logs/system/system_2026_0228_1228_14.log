@@ -1,0 +1,25 @@
+[2026-02-28 12:28:14] [INFO] PromptLog 伺服器已啟動，監聽埠 3000
+[2026-02-28 12:28:50] [INFO] GET /api/admin/keys 200 8ms from ::ffff:172.28.0.1
+[2026-02-28 12:29:04] [INFO] GET /api/admin/projects 200 3ms from ::ffff:172.28.0.1
+[2026-02-28 12:29:16] [INFO] GET /api/admin/keys 200 2ms from ::ffff:172.28.0.1
+[2026-02-28 12:55:46] [INFO] GET / 404 3ms from ::ffff:172.28.0.1
+[2026-02-28 13:12:16] [INFO] GET /_ignition/execute-solution 404 1ms from ::ffff:172.28.0.1
+[2026-02-28 13:34:02] [INFO] POST / 404 1ms from ::ffff:172.28.0.1
+[2026-02-28 13:34:03] [INFO] POST / 404 1ms from ::ffff:172.28.0.1
+[2026-02-28 13:47:10] [INFO] [ADMIN] 建立專案 id=3 name=apigee-stats
+[2026-02-28 13:47:10] [INFO] POST /api/admin/projects 201 8ms from ::ffff:172.28.0.1
+[2026-02-28 13:47:21] [INFO] [ADMIN] 產生 API Key id=3 project_id=3 label=永和電腦使用
+[2026-02-28 13:47:21] [INFO] POST /api/admin/keys 201 11ms from ::ffff:172.28.0.1
+[2026-02-28 14:46:27] [INFO] GET /api/prompts 200 5ms from ::ffff:172.28.0.1
+[2026-02-28 14:46:48] [INFO] GET /api/prompts/1 404 2ms from ::ffff:172.28.0.1
+[2026-02-28 14:46:50] [INFO] GET /api/prompts/2 404 1ms from ::ffff:172.28.0.1
+[2026-02-28 14:50:20] [INFO] [PROMPTS] 新增 id=1 project=promptLog model=- user=-
+[2026-02-28 14:50:20] [INFO] POST /api/prompts 201 8ms from ::ffff:172.28.0.1
+[2026-02-28 14:51:36] [INFO] GET /api/prompts/2 404 5ms from ::ffff:172.28.0.1
+[2026-02-28 14:51:39] [INFO] GET /api/prompts 200 3ms from ::ffff:172.28.0.1
+[2026-02-28 14:57:44] [INFO] [PROMPTS] 新增 id=2 project=promptLog model=- user=-
+[2026-02-28 14:57:44] [INFO] POST /api/prompts 201 6ms from ::ffff:172.28.0.1
+[2026-02-28 14:58:06] [INFO] GET /api/prompts 200 4ms from ::ffff:172.28.0.1
+[2026-02-28 15:10:44] [INFO] GET /health 200 0ms from ::ffff:172.28.0.1
+[2026-02-28 15:10:51] [INFO] GET /health 200 0ms from ::ffff:172.28.0.1
+[2026-02-28 15:10:52] [INFO] GET /health 200 0ms from ::ffff:172.28.0.1

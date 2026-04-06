@@ -1,0 +1,48 @@
+【任務】修復 PromptLog GET 查詢問題
+【日期】2026-03-04 15:41:00
+【使用模型】Claude Haiku 4.5
+【效率等級】Medium
+
+【問題描述】
+用戶報告：POST /api/prompts 新增 Prompt 時返回 201，日誌記錄成功，但 GET /api/prompts 無法看到新增的記錄。
+
+【根本原因】
+PromptLog 採用多租戶架構，每把 API Key 只能存取其所屬專案的資料。
+- POST 和 GET 使用了不同的 API Key（對應不同的專案）
+- GET 查詢在 auth middleware 中被限制為僅查詢該 API Key 所屬的專案
+- 因此看不到由其他 API Key 新增的記錄
+
+【實施的解決方案】
+1. 在 /src/routes/admin.js 新增兩個端點：
+   - GET /api/admin/prompts - 允許 Admin 跨專案查詢 Prompts
+   - DELETE /api/admin/prompts/:id - 允許 Admin 刪除任意 Prompt
+   
+2. 新增功能特性：
+   - 支援按 project_id 過濾（可選）
+   - 支援按 user、model、keyword 模糊查詢
+   - 支援按日期範圍查詢
+   - 支援分頁
+
+3. 新增故障排除文件：docs/troubleshooting.md
+   - 詳細說明問題原因
+   - 提供多種解決方案
+   - 提供 Admin API 使用範例
+
+4. 更新 README.md：
+   - 新增管理 API 的詳細說明
+   - 新增常見問題章節
+   - 連結到故障排除文件
+
+【測試結果】✅
+- 測試 1：查詢所有 Prompts (total: 25) ✓
+- 測試 2：按專案過濾 (apigee-stats: 18 筆) ✓
+- 測試 3：按日期範圍查詢 (2026-03-04: 9 筆) ✓
+- 容器重新構建並啟動成功 ✓
+
+【修改的文件】
+- src/routes/admin.js (新增 GET /api/admin/prompts, DELETE /api/admin/prompts/:id)
+- docs/troubleshooting.md (新建，附 UTF-8 BOM 編碼)
+- README.md (更新管理 API 說明，新增常見問題章節)
+
+【Token 使用】約 8,000 token
+【執行時間】約 15 分鐘
