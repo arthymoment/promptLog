@@ -1,4 +1,9 @@
-
 # 機密（改由 ~/.config/vaultwarden/secrets 管理）
 .envrc
 .env
+
+# 執行期資料庫（含 OAuth token，不得進版控）
+data/
+*.db
+*.db-shm
+*.db-wal
