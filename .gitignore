@@ -1,0 +1,4 @@
+
+# 機密（改由 ~/.config/vaultwarden/secrets 管理）
+.envrc
+.env
